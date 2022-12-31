@@ -1,0 +1,106 @@
+version: '3'
+networks:
+  ebook:
+    driver: bridge
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx-ebook
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
+      - ./openssl:/etc/nginx/certs
+
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - ebook
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+    networks:
+      - ebook
+  mysql:
+    image: mysql:5.7.16
+    container_name: mysql-ebook
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    volumes:
+      - ./mysql-dump:/docker-entrypoint-initdb.d
+      - /Users/uesrname/workspace/mysql/5.7.16:/var/lib/mysql
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_HOST: "localhost"
+      MYSQL_DATABASE: 'ebooks'
+      MYSQL_USER: 'ebook'
+      MYSQL_PASSWORD: '54vR@Kp3ztEt'
+      MYSQL_ROOT_PASSWORD: 'IXO86@RZ^v3qs5l9'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 0
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - ebook
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php-ebook
+    volumes:
+      - ./src:/var/www/html
+      - ./config/php.ini:/usr/local/etc/php/php.ini
+    ports:
+      - "9000:9000"
+    networks:
+      - ebook
+  
+  npm:
+    image: node:16.19.0
+    container_name: npm-ebook
+    user: root
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - php
+    # entrypoint: ['npm']
+
+  artisan:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: artisan-ebook
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - mysql
+    working_dir: /var/www/html
+    entrypoint: ['php', './artisan']
+    networks:
+      ebook:
+  
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment: 
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    volumes:
+      - ./config/php.ini:/usr/local/etc/php/php.ini
+    networks:
+      ebook:
+
+
+
