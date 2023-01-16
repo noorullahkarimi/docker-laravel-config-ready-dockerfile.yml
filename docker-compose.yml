@@ -41,10 +41,10 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_HOST: "localhost"
-      MYSQL_DATABASE: 'ebooks'
-      MYSQL_USER: 'ebook'
-      MYSQL_PASSWORD: '54vR@Kp3ztEt'
-      MYSQL_ROOT_PASSWORD: 'IXO86@RZ^v3qs5l9'
+      MYSQL_DATABASE: 'your database name'
+      MYSQL_USER: 'your user name (except root user)'
+      MYSQL_PASSWORD: 'your password'
+      MYSQL_ROOT_PASSWORD: 'your root password'
       MYSQL_ALLOW_EMPTY_PASSWORD: 0
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
