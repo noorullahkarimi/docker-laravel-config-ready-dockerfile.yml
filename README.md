@@ -61,7 +61,9 @@ Make a file with name <code>.wslconfig</code>
 now put the config below in:
 
 > [wsl2]
-> memory=2GB
+> 
+>  memory=2GB
+> 
 > processors=2
 
 Choose your memory limit and cpu core for your **WSL2** it make limited and docker can not use more. of course we have different way but this one is one of them.
