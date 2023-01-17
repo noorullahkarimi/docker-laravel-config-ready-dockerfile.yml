@@ -39,6 +39,7 @@ in this file you can see all config you need it like php, mysql, phpmyadmin, ngi
  - also you can change you ports in every service. the secound port is the port on your container and first port is the port on your computer.
  
 ### what is now?
+___
 open the shell ( linux subsystem ) and put the command below:
 
 > docker-compose run -d --build
@@ -47,6 +48,26 @@ it auto download the images you putted on the <code>docker-compose.yml </code> .
 after download, if you want to use artisn , the command be like:
 
 >  docker-compose run --rm artisan migrate
+
+### issue with docker
+Docker always have more usage of cpu and memory with no limited.
+if you want to reduce usage and make limite for that, the simplest way is limit the **WSL2** in your computer. 
+At the first go to this path in your computer 
+
+> C:\Users\<your computer name or root user>
+
+Make a file with name <code>.wslconfig</code>
+**NOTICE: exactly this name with dot at the first of name.**
+now put the config below in:
+
+> [wsl2]
+memory=2GB
+processors=2
+
+Choose your memory limit and cpu core for your **WSL2** it make limited and docker can not use more. of course we have different way but this one is one of them.
+**NOTICE** : if you reduce too much of cpu and memory maybe have some error. I wrote 1 core and 1 memory and get the **504-gatway time out**.
+if your computer when you work with docker make overheat, please disable the auto updater from **Docker Desktop** setting. also disable it from startup programs in task manager.
+
 
 ### final discuse
 if you see this project usefull, please put start on repository adn follow us .
